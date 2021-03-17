@@ -9,6 +9,8 @@ import (
 	"net"
 	"net/http"
 	"time"
+
+	"golang.org/x/net/html/charset"
 )
 
 type SOAPEncoder interface {
@@ -348,7 +350,13 @@ func (s *Client) call(ctx context.Context, soapAction string, request, response 
 	if s.opts.mtom {
 		encoder = newMtomEncoder(buffer)
 	} else {
-		encoder = xml.NewEncoder(buffer)
+		// encoder = xml.NewEncoder(buffer)
+		// error: xml: encoding "ISO-8859-1" declared but Decoder.CharsetReader is nil
+		// https://stackoverflow.com/questions/6002619/unmarshal-an-iso-8859-1-xml-input-in-go
+		// https://github.com/golang/go/issues/8937
+		decoder := xml.NewDecoder(buffer)
+		decoder.CharsetReader = charset.NewReaderLabel
+
 	}
 
 	if err := encoder.Encode(envelope); err != nil {
