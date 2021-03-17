@@ -354,8 +354,8 @@ func (s *Client) call(ctx context.Context, soapAction string, request, response 
 		// error: xml: encoding "ISO-8859-1" declared but Decoder.CharsetReader is nil
 		// https://stackoverflow.com/questions/6002619/unmarshal-an-iso-8859-1-xml-input-in-go
 		// https://github.com/golang/go/issues/8937
-		decoder := xml.NewDecoder(buffer)
-		decoder.CharsetReader = charset.NewReaderLabel
+		encoder := xml.NewDecoder(buffer)
+		encoder.CharsetReader = charset.NewReaderLabel
 
 	}
 
